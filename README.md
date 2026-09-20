@@ -4,7 +4,7 @@ Typed decisions with estimated probabilities for the [Laravel AI SDK](https://gi
 
 Ask a model the same typed questions about a piece of text several times, count the answers, and get back a typed result with a vote share for each one. You can also measure, later, how often those answers were right.
 
-> This package is in development and is not published.
+> Early release. The API may change before 0.1.
 
 - [Quick start](#quick-start)
 - [Installation](#installation)
@@ -43,37 +43,28 @@ Two things to know before you build on this. A `confidence` of 0.8 means four of
 
 Hunch needs PHP 8.3 or later, Laravel 13, and [`laravel/ai`](https://github.com/laravel/ai) with a provider configured and its API key in your environment.
 
-It is not on Packagist, and its repository is private while ownership of the code is settled, so Composer needs to be told where the package is and be able to reach it.
+It is not on Packagist, so Composer needs to be told where the package is.
 
 ### From the repository
 
-Add the repository, then require it. There are no tagged releases yet, so `dev-main` tracks the default branch:
+Add the repository, then require the release:
 
 ```json
 {
     "repositories": [
-        { "type": "vcs", "url": "git@github.com:ninthspace/hunch.git" }
+        { "type": "vcs", "url": "https://github.com/ninthspace/hunch.git" }
     ],
     "require": {
-        "ninthspace/hunch": "dev-main"
+        "ninthspace/hunch": "^0.0.1"
     }
 }
 ```
 
 ```bash
-composer require ninthspace/hunch:dev-main
+composer require ninthspace/hunch:^0.0.1
 ```
 
-Composer clones the repository as you, so it needs credentials that can read a private repository:
-
-- **SSH**, as above: an SSH key on the machine, and access to the `ninthspace` organisation.
-- **HTTPS**, using `https://github.com/ninthspace/hunch.git` as the url, with a personal access token:
-
-  ```bash
-  composer config --global github-oauth.github.com <token>
-  ```
-
-If the machine cannot read the repository, Composer reports the package as not found rather than as a permission problem.
+To track the default branch instead of a release, require `dev-main`.
 
 ### Working on Hunch alongside an application
 

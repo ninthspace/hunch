@@ -32,7 +32,7 @@ Story 1 gained a criterion for it, covered by `tests/ExtensionsTest.php`. The te
 ### Acceptance Criteria
 
 - An architecture test confirms every class under `src/` lives in the `Ninthspace\Hunch\` namespace, and `composer.json` declares the name `ninthspace/hunch`. `[unit]`
-- must NOT — The package is submitted to Packagist, the repository is made public, or a release is tagged before ownership of the code has been confirmed in writing. `[manual]`
+- ~~must NOT — The package is submitted to Packagist, the repository is made public, or a release is tagged before ownership of the code has been confirmed in writing. `[manual]`~~ **Superseded 2026-09-20T10:55:00Z**: Superseded on 2026-09-20 as mistaken rather than as satisfied. NFR8's release gate presumed a question over ownership of the code that never existed; the work is the author's own in invention and origin. The criterion is withdrawn with the clause it guarded, and publication is not conditional on anything.
 - `composer.json` requires `php` `^8.3`. `[unit]`
 - ~~On the production host, `php -v` reports 8.3 or later. `[target]`~~ **Superseded 2026-09-19T17:50:00Z**: Hunch is a package with no production host. Composer enforces `php` `^8.3` in any installing app, and criterion 3's composer.json test covers it.
 - `composer.json` constrains every `illuminate/*` requirement to `^13.0`. `[unit]`

@@ -196,9 +196,10 @@ it('documents the question types, options and commands it actually has', functio
         ->and($readme)->toContain(ltrim($composer['require']['php'], '^'))
         // It is not on Packagist, so the README must not imply a plain require.
         ->and($readme)->toContain('not on Packagist')
-        // The repository is private and has no tags, so both must be said.
-        ->and($readme)->toContain('repository is private')
-        ->and($readme)->toContain('github.com:ninthspace/hunch.git')
+        // The install instructions must name the repository and a constraint
+        // that resolves against the tags it actually has.
+        ->and($readme)->toContain('github.com/ninthspace/hunch.git')
+        ->and($readme)->toContain('^0.0.1')
         ->and($readme)->toContain('dev-main')
         // The database is optional, and the README has to say so plainly.
         ->and($readme)->toContain('no database queries')

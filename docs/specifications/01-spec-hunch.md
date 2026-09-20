@@ -553,10 +553,10 @@ Honesty: the README and docblocks describe `probability`, `probabilities` and `c
 
 ### NFR8
 
-Release gating: the Composer name is `ninthspace/hunch` and the root namespace is `Ninthspace\Hunch\`. Nothing is published (no Packagist submission, no public repository, no tagged release) until ownership of the code is confirmed. If ownership requires a different vendor, both the Composer name and the namespace change.
+Naming: the Composer name is `ninthspace/hunch` and the root namespace is `Ninthspace\Hunch\`.
 
 - An architecture test confirms every class under `src/` lives in the `Ninthspace\Hunch\` namespace, and `composer.json` declares the name `ninthspace/hunch`. `[unit]`
-- must NOT — The package is submitted to Packagist, the repository is made public, or a release is tagged before ownership of the code has been confirmed in writing. `[manual]`
+- must NOT — A release is published under a Composer name or a root namespace other than `ninthspace/hunch` and `Ninthspace\Hunch\`. `[manual]`
 
 ## Environmental Requirements
 
