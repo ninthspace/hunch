@@ -1,0 +1,83 @@
+{
+    "name": "ninthspace/hunch",
+    "description": "Typed decisions with estimated probabilities for the Laravel AI SDK",
+    "keywords": [
+        "ninthspace",
+        "laravel",
+        "hunch",
+        "ai",
+        "classification"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Chris Aves",
+            "email": "chris@junctionbox.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.3",
+        "illuminate/contracts": "^13.0",
+        "illuminate/support": "^13.0",
+        "laravel/ai": "^0.11",
+        "spatie/laravel-package-tools": "^1.16"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "laravel/boost": "^2.9",
+        "laravel/pint": "^1.14",
+        "nunomaduro/collision": "^8.8",
+        "orchestra/testbench": "^11.0",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-arch": "^4.0",
+        "pestphp/pest-plugin-laravel": "^4.0",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Ninthspace\\Hunch\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ninthspace\\Hunch\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@composer run prepare",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "test": "vendor/bin/pest",
+        "test:offline": [
+            "sandbox-exec -p '(version 1)(allow default)(deny network-outbound (remote ip))' vendor/bin/pest",
+            "sandbox-exec -p '(version 1)(allow default)(deny network-outbound (remote ip))' vendor/bin/pest --group=network-probe"
+        ],
+        "compat": [
+            "@php tests/Compat/check-key.php",
+            "vendor/bin/pest --group=compat"
+        ],
+        "check": [
+            "vendor/bin/phpstan analyse --memory-limit=1G",
+            "vendor/bin/pint --test"
+        ],
+        "format": "vendor/bin/pint"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Ninthspace\\Hunch\\HunchServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

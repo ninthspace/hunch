@@ -1,0 +1,14 @@
+{
+    "extraKnownMarketplaces": {
+        "laravel": {
+            "source": {
+                "source": "github",
+                "repo": "laravel/claude-code"
+            }
+        }
+    },
+    "enabledPlugins": {
+        "laravel@laravel": true,
+        "cpm@ninthspace-marketplace": false
+    }
+}

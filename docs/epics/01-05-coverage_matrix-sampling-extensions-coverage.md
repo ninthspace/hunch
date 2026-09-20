@@ -1,0 +1,42 @@
+# Coverage: Sampling extensions
+
+**Number**: 01-05  
+**Source epic**: 01-05  
+**Status**: pending  
+
+## Coverage
+
+| # | Requirement | Spec Text | Story Criterion | Covered by | Test Approach | Verified |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | FR7 | Stop if every applicable answer is unanimous. | `adaptive: [3, 7]` with the first 3 samples unanimous on every applicable question takes exactly 3 samples. | Story 1 | `[tdd]` `[unit]` | ✓ |
+| 2 | FR7 | Otherwise add 2 samples at a time until the answers are unanimous, the leading answer can no longer be overtaken or tied by the samples remaining, or `max` is reached. | `adaptive: [3, 7]` with votes A,A,B takes 5 samples next (a step of 2). With votes A,A,B,A,A it then stops, because 4–1 with 2 samples left cannot be overtaken or tied. | Story 1 | `[tdd]` `[unit]` | ✓ |
+| 3 | FR7 | Otherwise add 2 samples at a time until the answers are unanimous, the leading answer can no longer be overtaken or tied by the samples remaining, or `max` is reached. | `adaptive: [3, 7]` with votes still splitting 3–3 after 6 samples reaches exactly 7 samples and stops. | Story 1 | `[tdd]` `[unit]` | ✓ |
+| 4 | FR7 | Otherwise add 2 samples at a time until the answers are unanimous, the leading answer can no longer be overtaken or tied by the samples remaining, or `max` is reached. | A step never exceeds `max`: `adaptive: [3, 4]` goes from 3 samples to 4, not 5. | Story 1 | `[tdd]` `[unit]` | ✓ |
+| 5 | FR7 | or `max` is reached. | Invalid samples are excluded when judging unanimity. They count towards `max`, and are replaced within the resampling cap, so the number of model calls never exceeds `max` plus `max_resamples`. | Story 1 | `[unit]` | ✓ |
+| 6 | FR7 | the leading answer can no longer be overtaken or tied by the samples remaining | must NOT — Sampling stops while a trailing answer could still tie the leader with the samples remaining before `max`. | Story 1 | `[tdd]` `[unit]` | ✓ |
+| 7 | FR7 | Stop if every applicable answer is unanimous. | must NOT — Adaptive sampling requires unanimity on a conditional question that does not apply in the current samples. | Story 2 | `[tdd]` `[unit]` | ✓ |
+| 8 | FR21 | The answer is computed only over samples whose controlling Choice answer is one of the values. | With `group_date` set to `onlyWhen('intent', 'group')` and samples whose intent is group, group, group, refund, group, `group_date` is computed over the 4 matching samples only. | Story 2 | `[tdd]` `[unit]` | ✓ |
+| 9 | FR21 | `applies` is true when the winning controlling answer matches. | `applies` is true when the winning `intent` is `group`, and false when the winner is something else, even if some samples answered `group`. | Story 2 | `[unit]` | ✓ |
+| 10 | FR21 | If fewer than 2 samples qualify, the answer is null. | With only 1 matching sample, the conditional answer is null. | Story 2 | `[unit]` | ✓ |
+| 11 | FR21 | The answer is computed only over samples whose controlling Choice answer is one of the values. | `onlyWhen('intent', ['group', 'refund'])` counts samples matching either listed value. | Story 2 | `[unit]` | ✓ |
+| 12 | FR21 | Conditional questions: `->onlyWhen($key, $values)`. | Building a question set throws when `onlyWhen` references a key that does not exist, a question that is not a Choice, or a value that is not one of that Choice's options. | Story 2 | `[unit]` | ✓ |
+| 13 | FR22 | It is off by default. | Without `withReasons()`, the schema has no `reason` field and `Result->reasons` is null. | Story 3 | `[unit]` | ✓ |
+| 14 | FR22 | `withReasons(int $maxChars = 200)` asks each sample for a short reason. | With `withReasons(120)`, the schema has a `reason` field, the instructions ask for at most 120 characters, and `Result->reasons` lists one reason per valid sample. | Story 3 | `[integration]` | ✓ |
+| 15 | FR22 | `withReasons(int $maxChars = 200)` asks each sample for a short reason. | A reason longer than `maxChars` is truncated to `maxChars`; the sample stays valid. | Story 3 | `[unit]` | ✓ |
+| 16 | FR22 | A reason is display text only and is never used as input to anything. | must NOT — A reason's content changes any vote, probability or later prompt. Checked by two runs with identical answers and different reasons producing identical answers and identical subsequent prompts. | Story 3 | `[integration]` | ✓ |
+| 17 | FR22 | A reason is display text only and is never used as input to anything. | An architecture test shows that no code path reads a sample's `reason` into a prompt, a hash, a vote or a label. | Story 3 | `[unit]` | ✓ |
+| 18 | FR23 | `redactUsing(callable)` transforms the state once per classification, before the first model call. | With `redactUsing(fn ($s) => str_replace('Alice', '[name]', $s))`, every captured user message contains `[name]` and none contains `Alice`. | Story 4 | `[integration]` | ✓ |
+| 19 | FR23 | `redactUsing(callable)` transforms the state once per classification, before the first model call. | For array state, the redactor receives each named part, and the section names are preserved in the user message. | Story 4 | `[unit]` | ✓ |
+| 20 | FR23 | Every sample receives the same redacted text | The redactor runs exactly once per classification, before the first sample, and every sample receives the same redacted text. | Story 4 | `[integration]` | ✓ |
+| 21 | FR23 | `state_hash` is computed over it. | `state_hash` equals sha256 of the redacted, rendered state that was sent. | Story 4 | `[unit]` | ✓ |
+| 22 | FR24 | Events are dispatched: `Classifying`, `SampleTaken`, `SampleInvalid`, `Classified`, `ClassificationFailed`, `Labelled` and `CalibrationComputed`. | Under `Event::fake()`, a successful classification with 3 samples dispatches, in order, `Classifying`, `SampleTaken` 3 times, and `Classified`. | Story 6 | `[integration]` | ✓ |
+| 23 | FR24 | Events are dispatched: `Classifying`, `SampleTaken`, `SampleInvalid`, `Classified`, `ClassificationFailed`, `Labelled` and `CalibrationComputed`. | An invalid sample dispatches `SampleInvalid` instead of `SampleTaken`. A failed classification dispatches the `ClassificationFailed` event before the exception is thrown. | Story 6 | `[integration]` | ✓ |
+| 24 | FR24 | The SDK's own `PromptingAgent` and `AgentPrompted` events still fire for each sample. | The SDK's `PromptingAgent` and `AgentPrompted` events fire once per sample. | Story 6 | `[integration]` | ✓ |
+| 25 | FR24 | Events are dispatched: `Classifying`, `SampleTaken`, `SampleInvalid`, `Classified`, `ClassificationFailed`, `Labelled` and `CalibrationComputed`. | Every classification, sample and label event payload carries the classification ID and the question set hash. | Story 6 | `[unit]` | ✓ |
+| 26 | FR28 | A default redactor for email addresses and phone numbers is provided. | `redactUsing(Hunch\Redactors\ContactDetails::class)` replaces `alice@example.com` with `[email]`, and `+44 7700 900123`, `07700 900123` and `(555) 123-4567` with `[phone]`. | Story 5 | `[unit]` | ✓ |
+| 27 | FR28 | A default redactor for email addresses and phone numbers is provided. | A fixture of 20 labelled strings (10 containing contact details, 10 not) is redacted with no misses on the positives and no changes to the negatives, which include dates, prices, booking references such as `BK-2026-0415`, and times. | Story 5 | `[unit]` | ✓ |
+| 28 | FR28 | It is off by default. | With no redactor configured, the state reaches the prompt unchanged: the default redactor is off unless explicitly set. | Story 5 | `[integration]` | ✓ |
+| 29 | FR28 | A default redactor for email addresses and phone numbers is provided. | must NOT — The default redactor changes text that contains no email address or phone number. | Story 5 | `[unit]` | ✓ |
+| 30 | NFR1 | Model-written reasons are never used as input to anything. | must NOT — A reason's content changes any vote, probability or later prompt. Checked by two runs with identical answers and different reasons producing identical answers and identical subsequent prompts. | Story 3 | `[integration]` | ✓ |
+| 31 | NFR1 | Model-written reasons are never used as input to anything. | An architecture test shows that no code path reads a sample's `reason` into a prompt, a hash, a vote or a label. | Story 3 | `[unit]` | ✓ |
+| 32 | NFR2 | Hunch never writes the content of the state to the database, a log or a cache. | must NOT — Any Hunch event carries the state text. Events carry `state_hash` only. | Story 6 | `[integration]` | ✓ |
