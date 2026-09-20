@@ -55,16 +55,18 @@ Add the repository, then require the release:
         { "type": "vcs", "url": "https://github.com/ninthspace/hunch.git" }
     ],
     "require": {
-        "ninthspace/hunch": "^0.0.1"
+        "ninthspace/hunch": "^0.0"
     }
 }
 ```
 
 ```bash
-composer require ninthspace/hunch:^0.0.1
+composer require ninthspace/hunch:^0.0
 ```
 
-To track the default branch instead of a release, require `dev-main`.
+`^0.0` takes any `0.0.x` release and stops before `0.1`, so patches arrive on
+`composer update` and a version that may break you does not. To track the
+default branch instead of a release, require `dev-main`.
 
 ### Working on Hunch alongside an application
 

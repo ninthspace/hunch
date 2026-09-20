@@ -199,7 +199,8 @@ it('documents the question types, options and commands it actually has', functio
         // The install instructions must name the repository and a constraint
         // that resolves against the tags it actually has.
         ->and($readme)->toContain('github.com/ninthspace/hunch.git')
-        ->and($readme)->toContain('^0.0.1')
+        // Quoted, so an exact pin such as "^0.0.1" cannot satisfy this.
+        ->and($readme)->toContain('"ninthspace/hunch": "^0.0"')
         ->and($readme)->toContain('dev-main')
         // The database is optional, and the README has to say so plainly.
         ->and($readme)->toContain('no database queries')
